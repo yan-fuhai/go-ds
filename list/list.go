@@ -94,6 +94,15 @@ func (l *LinkedList) Insert(idx int, v interface{}) error {
 	return nil
 }
 
+func (l *LinkedList) ToSlice() []interface{} {
+	s := make([]interface{}, 0, l.length)
+	p := l.head.right
+	for p != l.tail {
+		s = append(s, p.val)
+	}
+	return s
+}
+
 // addBefore add newNode at the place before curNode
 // ... <-> newNode <-> curNode <-> ...
 func (l *LinkedList) addBefore(newNode, curNode *listNode) {
@@ -103,7 +112,7 @@ func (l *LinkedList) addBefore(newNode, curNode *listNode) {
 
 func (l *LinkedList) getNodeByIndex(idx int) *listNode {
 	n := l.head.right
-	for i := 0; i < idx && n != nil; i++ {
+	for i := 0; i < idx && n != l.tail; i++ {
 		n = n.right
 	}
 	return n

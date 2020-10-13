@@ -51,3 +51,20 @@ func TestLinkedList(t *testing.T) {
 		t.Errorf("Length() must be 0, got %v", l.Length())
 	}
 }
+
+func TestInsertAndRemove(t *testing.T) {
+	l := NewLinkedList()
+	for i, v := range list {
+		_ = l.Insert(i, v)
+	}
+	if l.Length() != len(list) {
+		t.Errorf("Length() must be %v, got %v", len(list), l.Length())
+	}
+
+	for i := 0; i < len(list); i++ {
+		_ = l.Remove(0)
+	}
+	if l.Length() != 0 {
+		t.Errorf("Length() must be 0, got %v", l.Length())
+	}
+}

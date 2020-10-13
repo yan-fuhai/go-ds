@@ -9,4 +9,5 @@ type List interface {
 	Remove(int) error
 	Index(interface{}) int
 	Insert(int, interface{}) error
+	ToSlice() []interface{}
 }
