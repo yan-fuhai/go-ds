@@ -8,7 +8,7 @@ type doubleListNode struct {
 }
 
 // LRUCache store key-value pairs with fixed capacity.
-// It would remove the least recently used (LRU) key-value pair when it reach the capacity.
+// It would remove the least recently used (LRU) key-value pair as it exceeds the capacity.
 type LRUCache struct {
 	capacity int
 	head     *doubleListNode
