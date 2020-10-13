@@ -1,3 +1,8 @@
 # go-ds
 
-Implement stack, queue, deque and set in Golang.
+This project contains implementations of below data structures:
+ 
+- Queue, Deque
+- LRU
+- Stack
+- Set
