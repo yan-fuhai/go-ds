@@ -6,3 +6,4 @@ This project contains implementations of below data structures:
 - LRU
 - Stack
 - Set
+- LinkedList
