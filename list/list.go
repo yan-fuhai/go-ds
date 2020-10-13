@@ -89,15 +89,16 @@ func (l *LinkedList) Insert(idx int, v interface{}) error {
 	if idx > l.length {
 		return fmt.Errorf("index must be in [0, %v], got index %v", l.length, idx)
 	}
-	replacedNode := l.getNodeByIndex(idx)
-	newNode := &listNode{
-		val:   v,
-		left:  replacedNode.left,
-		right: replacedNode,
-	}
-	replacedNode.left.right, replacedNode.left = newNode, newNode
+	l.addBefore(&listNode{val: v}, l.getNodeByIndex(idx))
 	l.length++
 	return nil
+}
+
+// addBefore add newNode at the place before curNode
+// ... <-> newNode <-> curNode <-> ...
+func (l *LinkedList) addBefore(newNode, curNode *listNode) {
+	newNode.left, newNode.right = curNode.left, curNode
+	curNode.left.right, curNode.left = newNode, newNode
 }
 
 func (l *LinkedList) getNodeByIndex(idx int) *listNode {
