@@ -7,6 +7,7 @@ type Set struct {
 	m map[interface{}]bool
 }
 
+// NewSet returns a new set pointer.
 func NewSet() *Set {
 	return &Set{
 		m: make(map[interface{}]bool),
