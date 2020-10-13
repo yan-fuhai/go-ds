@@ -15,6 +15,7 @@ type LinkedList struct {
 	tail   *listNode
 }
 
+// Back returns the last element of list or nil if the list is empty.
 func (l *LinkedList) Back() interface{} {
 	if l.Empty() {
 		return nil
@@ -22,6 +23,7 @@ func (l *LinkedList) Back() interface{} {
 	return l.tail.left.val
 }
 
+// Front returns the first element of list of nil if the list if empty.
 func (l *LinkedList) Front() interface{} {
 	if l.Empty() {
 		return nil

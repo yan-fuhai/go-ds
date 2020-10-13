@@ -15,33 +15,35 @@ func NewSet() *Set {
 }
 
 // Add add element into Set.
-func (s *Set) Add(v interface{}) {
-	s.m[v] = true
+func (s *Set) Add(k interface{}) {
+	s.m[k] = true
 }
 
-// Has return true if v already in Set, else false.
-func (s *Set) Has(v interface{}) bool {
-	if _, has := s.m[v]; has {
-		return true
-	} else {
-		return false
-	}
+// Has return true if k already in set, else false.
+func (s *Set) Has(k interface{}) bool {
+	_, has := s.m[k]
+	return has
 }
 
-// Remove remove v from Set.
-// Return error if v doesn't exist in Set.
-func (s *Set) Remove(v interface{}) error {
-	if _, has := s.m[v]; has {
-		delete(s.m, v)
+// Empty returns true if set is empty, else false.
+func (s *Set) Empty() bool {
+	return len(s.m) == 0
+}
+
+// Remove remove k from Set.
+// Return error if k doesn't exist in Set.
+func (s *Set) Remove(k interface{}) error {
+	if _, has := s.m[k]; has {
+		delete(s.m, k)
 		return nil
 	} else {
-		return fmt.Errorf("Set has not element: %v", v)
+		return fmt.Errorf("set has not element: %v", k)
 	}
 }
 
-// Discard remove v from Set and return nothing no matter v already in Set.
-func (s *Set) Discard(v interface{}) {
-	_ = s.Remove(v)
+// Discard remove k from Set and return nothing no matter k already in Set.
+func (s *Set) Discard(k interface{}) {
+	_ = s.Remove(k)
 }
 
 // GetAll return slice that contains all elements in this Set.
