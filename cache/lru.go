@@ -44,6 +44,7 @@ func (c *LRUCache) Put(k interface{}, v interface{}) {
 		c.addToHead(newNode)
 		c.keyMap[k] = newNode
 		if len(c.keyMap) > c.capacity {
+			delete(c.keyMap, c.tail.left.key)
 			c.removeTail()
 		}
 	}
