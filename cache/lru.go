@@ -52,7 +52,7 @@ func (c *LRUCache) Put(k interface{}, v interface{}) {
 	}
 }
 
-// Get returns the value corresponding the input key k.
+// Get returns the value corresponding with the key k.
 func (c *LRUCache) Get(k interface{}) interface{} {
 	if nPtr, has := c.keyMap[k]; has {
 		c.moveToHead(nPtr)
