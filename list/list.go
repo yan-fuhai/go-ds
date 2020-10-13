@@ -99,6 +99,7 @@ func (l *LinkedList) ToSlice() []interface{} {
 	p := l.head.right
 	for p != l.tail {
 		s = append(s, p.val)
+		p = p.right
 	}
 	return s
 }
