@@ -8,12 +8,14 @@ type listNode struct {
 	right *listNode
 }
 
+// LinkedList was implemented by double linked nodes.
 type LinkedList struct {
 	length int
 	head   *listNode
 	tail   *listNode
 }
 
+// NewLinkedList returns a new linked-list pointer.
 func NewLinkedList() *LinkedList {
 	head, tail := &listNode{}, &listNode{}
 	head.right, tail.left = tail, head
@@ -24,6 +26,7 @@ func NewLinkedList() *LinkedList {
 	}
 }
 
+// Append appends new element at the tail of list.
 func (l *LinkedList) Append(v interface{}) {
 	l.addToTail(&listNode{
 		val: v,
@@ -31,15 +34,18 @@ func (l *LinkedList) Append(v interface{}) {
 	l.length++
 }
 
+// Clear removes all element in this list.
 func (l *LinkedList) Clear() {
 	l.head.right, l.tail.left = l.tail, l.head
 	l.length = 0
 }
 
+// Empty return true if this list is empty, else false.
 func (l *LinkedList) Empty() bool {
 	return l.length == 0
 }
 
+// Get returns a element corresponding with index idx.
 func (l *LinkedList) Get(idx int) (interface{}, error) {
 	if idx >= l.length {
 		return nil, l.outOfRangeError(idx)
@@ -47,10 +53,12 @@ func (l *LinkedList) Get(idx int) (interface{}, error) {
 	return l.getNodeByIndex(idx).val, nil
 }
 
+// Length returns the length of this list.
 func (l *LinkedList) Length() int {
 	return l.length
 }
 
+// Remove removes the element corresponding with index idx.
 func (l *LinkedList) Remove(idx int) error {
 	if idx >= l.length {
 		return l.outOfRangeError(idx)
@@ -60,6 +68,8 @@ func (l *LinkedList) Remove(idx int) error {
 	return nil
 }
 
+// Index returns the first-occur index of v.
+// It would return -1 when v was not found.
 func (l *LinkedList) Index(v interface{}) int {
 	i, p := 0, l.head.right
 	for i < l.length && p != nil {
@@ -72,6 +82,9 @@ func (l *LinkedList) Index(v interface{}) int {
 	return -1
 }
 
+// Insert inserts new element v with index idx.
+// The insert range is [0, list.length].
+// After calling Insert(), the length of list would increment by one.
 func (l *LinkedList) Insert(idx int, v interface{}) error {
 	if idx > l.length {
 		return fmt.Errorf("index must be in [0, %v], got index %v", l.length, idx)
