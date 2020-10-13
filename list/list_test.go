@@ -1,6 +1,7 @@
 package list
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -66,5 +67,15 @@ func TestInsertAndRemove(t *testing.T) {
 	}
 	if l.Length() != 0 {
 		t.Errorf("Length() must be 0, got %v", l.Length())
+	}
+}
+
+func TestToSlice(t *testing.T) {
+	l := NewLinkedList()
+	for i, v := range list {
+		_ = l.Insert(i, v)
+	}
+	if reflect.DeepEqual(l.ToSlice(), list) {
+		t.Errorf("ToSlice() must deeply equal to list")
 	}
 }
