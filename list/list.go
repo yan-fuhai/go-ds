@@ -15,6 +15,14 @@ type LinkedList struct {
 	tail   *listNode
 }
 
+func (l *LinkedList) Back() interface{} {
+	return l.tail.left.val
+}
+
+func (l *LinkedList) Front() interface{} {
+	return l.head.right.val
+}
+
 // NewLinkedList returns a new linked-list pointer.
 func NewLinkedList() *LinkedList {
 	head, tail := &listNode{}, &listNode{}
