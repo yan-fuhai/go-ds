@@ -16,10 +16,16 @@ type LinkedList struct {
 }
 
 func (l *LinkedList) Back() interface{} {
+	if l.Empty() {
+		return nil
+	}
 	return l.tail.left.val
 }
 
 func (l *LinkedList) Front() interface{} {
+	if l.Empty() {
+		return nil
+	}
 	return l.head.right.val
 }
 
