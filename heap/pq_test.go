@@ -15,44 +15,50 @@
 package heap
 
 import (
-	"container/heap"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
+	"sort"
 	"testing"
 )
 
-func TestPQ(t *testing.T) {
-	pq := NewEmptyPriorityQueue()
-	assert.Equal(t, 0, pq.Len())
-	items := []Item{
-		{
-			value:    "apple",
-			priority: 4,
-		},
-		{
-			value:    "banana",
-			priority: 3,
-		},
-		{
-			value:    "peach",
-			priority: 2,
-		},
-		{
-			value:    "strawberry",
-			priority: 1,
-		},
+func TestHeapSort(t *testing.T) {
+	n := 100000
+	nums := make([]int, n)
+	pq := NewPriorityQueue()
+
+	for i := 0; i < n; i++ {
+		nums[i] = rand.Intn(100)
 	}
 
-	pq = NewPriorityQueue(items)
-	for _, item := range items {
-		pop := heap.Pop(pq).(*Item)
-		assert.Equal(t, pop.value, item.value)
+	for _, n := range nums {
+		pq.Push(n, n)
 	}
-	assert.Equal(t, 0, pq.Len())
 
-	item := Item{
-		value:    "apple",
-		priority: 10,
+	sort.Ints(nums)
+	for i := len(nums) - 1; i >= 0; i-- {
+		val, _, err := pq.Pop()
+		assert.Equal(t, val, nums[i])
+		assert.NoError(t, err)
+		assert.Equal(t, pq.Len(), i)
 	}
-	heap.Push(pq, &item)
-	assert.Equal(t, 1, pq.Len())
+}
+
+func TestPopFromEmptyPQ(t *testing.T) {
+	pq := NewPriorityQueue()
+	_, _, err := pq.Pop()
+	assert.Error(t, err)
+}
+
+func BenchmarkPush(b *testing.B) {
+	pq := NewPriorityQueue()
+	for i := 0; i < b.N; i++ {
+		pq.Push(0, i)
+	}
+}
+
+func BenchmarkPop(b *testing.B) {
+	pq := NewPriorityQueue()
+	for i := 0; i < b.N; i++ {
+		_, _, _ = pq.Pop()
+	}
 }

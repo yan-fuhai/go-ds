@@ -14,81 +14,66 @@
 
 package heap
 
-import "container/heap"
+import (
+	"fmt"
+	"math"
+)
 
-// An Item was similar with heap.heap_test.Item. The difference is that
+// An item was similar with heap.heap_test.item. The difference is that
 // this one set the type of value with empty interface, which makes it more general.
-type Item struct {
+type item struct {
 	value    interface{}
 	priority int
-	index    int
 }
 
-// An PriorityQueue is a copy of heap.heap_test.PriorityQueue.
-type PriorityQueue []*Item
+// An PriorityQueue is an implementation of heap.
+//
+// ATTENTION: The top of non-empty priority queue would be the item with MAXIMUM priority.
+type PriorityQueue []*item
 
 // NewEmptyPriorityQueue returns a new empty PriorityQueue pointer.
-func NewEmptyPriorityQueue() *PriorityQueue {
+func NewPriorityQueue() *PriorityQueue {
 	pq := make(PriorityQueue, 0)
 	return &pq
 }
 
-// NewPriorityQueue returns a new PriorityQueue and initializes it with items.
-func NewPriorityQueue(items []Item) *PriorityQueue {
-	pq := make(PriorityQueue, 0, len(items))
-	heap.Init(&pq)
-	for i := 0; i < len(items); i++ {
-		items[i].index = i
-		heap.Push(&pq, &items[i])
-	}
-	return &pq
-}
-
 // Len returns length of priority queue.
-func (pq PriorityQueue) Len() int {
-	return len(pq)
+func (pq *PriorityQueue) Len() int {
+	return len(*pq)
 }
 
 // Less return true if item with index i is less than item with index j, else false.
-func (pq PriorityQueue) Less(i, j int) bool {
-	return pq[i].priority > pq[j].priority
+func (pq *PriorityQueue) Less(i, j int) bool {
+	// In this case, the item with maximum priority would be the top of heap.
+	// Reverse the '<' to '>' in below statement and then the top of heap would be the item with minimum priority.
+	return (*pq)[i].priority > (*pq)[j].priority
 }
 
 // Swap swaps items locate at index i and j.
-func (pq PriorityQueue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
-	pq[i].index = j
-	pq[j].index = i
+func (pq *PriorityQueue) Swap(i, j int) {
+	(*pq)[i], (*pq)[j] = (*pq)[j], (*pq)[i]
 }
 
-// Push simply pushes a new item at the end of priority queue.
-// ATTENTION: This operation doesn't apply shift-down or shift-up for priority queue,
-// which means that it would destroy the property of heap.
-// For pushing a new item into priority queue and remaining property of heap, use heap.Push.
-func (pq *PriorityQueue) Push(x interface{}) {
-	n := len(*pq)
-	item := x.(*Item)
-	item.index = n
+// Push pushes a new item at the end of priority queue with given priority.
+func (pq *PriorityQueue) Push(v interface{}, priority int) {
+	item := &item{
+		value:    v,
+		priority: priority,
+	}
 	*pq = append(*pq, item)
+	up(pq, pq.Len()-1)
 }
 
-// Pop simply pops the last item of priority queue.
-// ATTENTION: This operation doesn't apply shift-down or shift-up for priority queue,
-// which means that it would destroy the property of heap.
-// For pushing a new item into priority queue and remaining property of heap, use heap.Push.
-func (pq *PriorityQueue) Pop() interface{} {
-	old := *pq
-	n := len(old)
-	item := old[n-1]
-	old[n-1] = nil  // avoid memory leak
-	item.index = -1 // for safety
-	*pq = old[0 : n-1]
-	return item
-}
-
-// update modifies the priority and value of an Item in the queue.
-func (pq *PriorityQueue) update(item *Item, value interface{}, priority int) {
-	item.value = value
-	item.priority = priority
-	heap.Fix(pq, item.index)
+// Pop pops the item with maximum priority in priority queue, both the value and priority would be returned.
+func (pq *PriorityQueue) Pop() (interface{}, int, error) {
+	n := pq.Len()
+	if n == 0 {
+		return nil, math.MinInt64, fmt.Errorf("can not pop from empty heap")
+	}
+	top := (*pq)[0]
+	pq.Swap(0, n-1)
+	down(pq, 0, n-1)
+	(*pq)[n-1] = nil // avoid memory leak, that is, remove pointer to last element for garbage collection
+	*pq = (*pq)[:n-1]
+	return top.value, top.priority, nil
 }
