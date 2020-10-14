@@ -12,4 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package set
+package cache
+
+type Interface interface {
+	Put(k interface{}, v interface{})
+	Get(k interface{}) interface{}
+	Clear()
+}

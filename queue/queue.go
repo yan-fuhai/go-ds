@@ -16,6 +16,14 @@ package queue
 
 import "fmt"
 
+type Interface interface {
+	Empty() bool
+	Size() int
+	PushBack(interface{})
+	PopFront() (interface{}, error)
+	Clear()
+}
+
 type queueNode struct {
 	val  interface{}
 	next *queueNode

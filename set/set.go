@@ -16,6 +16,17 @@ package set
 
 import "fmt"
 
+type Interface interface {
+	Add(interface{})
+	Has(interface{}) bool
+	Empty() bool
+	Remove(interface{}) error
+	Discard(interface{})
+	GetAll() []interface{}
+	Size() int
+	Clear()
+}
+
 // Set Implementation of SET which contains unique elements.
 type Set struct {
 	m map[interface{}]bool

@@ -16,6 +16,15 @@ package stack
 
 import "fmt"
 
+type Interface interface {
+	Clear()
+	Empty() bool
+	Push(interface{})
+	Pop() (interface{}, error)
+	Size() int
+	Top() interface{}
+}
+
 type stackNode struct {
 	val  interface{}
 	next *stackNode

@@ -16,6 +16,12 @@ package queue
 
 import "fmt"
 
+type DoubleEndedQueue interface {
+	Interface
+	PushFront(interface{})
+	PopBack() (interface{}, error)
+}
+
 type dequeNode struct {
 	val   interface{}
 	left  *dequeNode
