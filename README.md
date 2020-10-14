@@ -2,7 +2,7 @@
 
 This project contains implementations of below data structures:
  
-- Queue, Deque
+- Queue, Deque, Priority Queue
 - LRU
 - Stack
 - Set
