@@ -30,6 +30,15 @@ type LRUCache struct {
 	keyMap   map[interface{}]*doubleListNode
 }
 
+// Keys returns a slice which contains all unique keys in this LRU cache.
+func (c *LRUCache) Keys() []interface{} {
+	keys := make([]interface{}, 0, len(c.keyMap))
+	for k := range c.keyMap {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
 // NewLRUCache returns a new LRUCache pointer
 func NewLRUCache(capacity int) *LRUCache {
 	head, tail := &doubleListNode{}, &doubleListNode{}

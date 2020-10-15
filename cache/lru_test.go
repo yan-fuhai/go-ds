@@ -14,7 +14,10 @@
 
 package cache
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 type kv struct {
 	key   string
@@ -81,6 +84,7 @@ func TestLRUCache(t *testing.T) {
 			value: 9,
 		},
 	}
+
 	for _, g := range gets {
 		got := c.Get(g.key)
 		if g.value != got {
@@ -101,4 +105,13 @@ func TestClear(t *testing.T) {
 			t.Errorf("Get() must be nil, got %v", got)
 		}
 	}
+}
+
+func TestKeys(t *testing.T) {
+	c := NewLRUCache(10)
+	for i := 0; i < 5; i++ {
+		c.Put(i, 0)
+	}
+	keys := c.Keys()
+	assert.Equal(t, 5, len(keys))
 }
