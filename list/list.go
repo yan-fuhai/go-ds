@@ -27,3 +27,14 @@ type Interface interface {
 	Insert(int, interface{}) error
 	ToSlice() []interface{}
 }
+
+type singleNode struct {
+	val  interface{}
+	next *singleNode
+}
+
+type doubleNode struct {
+	val   interface{}
+	left  *doubleNode
+	right *doubleNode
+}

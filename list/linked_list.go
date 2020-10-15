@@ -16,17 +16,11 @@ package list
 
 import "fmt"
 
-type listNode struct {
-	val   interface{}
-	left  *listNode
-	right *listNode
-}
-
 // LinkedList was implemented by double linked nodes.
 type LinkedList struct {
 	length int
-	head   *listNode
-	tail   *listNode
+	head   *doubleNode
+	tail   *doubleNode
 }
 
 // Back returns the last element of list or nil if the list is empty.
@@ -47,7 +41,7 @@ func (l *LinkedList) Front() interface{} {
 
 // NewLinkedList returns a new linked-list pointer.
 func NewLinkedList() *LinkedList {
-	head, tail := &listNode{}, &listNode{}
+	head, tail := &doubleNode{}, &doubleNode{}
 	head.right, tail.left = tail, head
 	return &LinkedList{
 		length: 0,
@@ -58,7 +52,7 @@ func NewLinkedList() *LinkedList {
 
 // Append appends new element at the tail of list.
 func (l *LinkedList) Append(v interface{}) {
-	l.addToTail(&listNode{
+	l.addToTail(&doubleNode{
 		val: v,
 	})
 	l.length++
@@ -119,7 +113,7 @@ func (l *LinkedList) Insert(idx int, v interface{}) error {
 	if idx > l.length {
 		return fmt.Errorf("index must be in [0, %v], got index %v", l.length, idx)
 	}
-	l.addBefore(&listNode{val: v}, l.getNodeByIndex(idx))
+	l.addBefore(&doubleNode{val: v}, l.getNodeByIndex(idx))
 	l.length++
 	return nil
 }
@@ -136,12 +130,12 @@ func (l *LinkedList) ToSlice() []interface{} {
 
 // addBefore add newNode at the place before curNode
 // ... <-> newNode <-> curNode <-> ...
-func (l *LinkedList) addBefore(newNode, curNode *listNode) {
+func (l *LinkedList) addBefore(newNode, curNode *doubleNode) {
 	newNode.left, newNode.right = curNode.left, curNode
 	curNode.left.right, curNode.left = newNode, newNode
 }
 
-func (l *LinkedList) getNodeByIndex(idx int) *listNode {
+func (l *LinkedList) getNodeByIndex(idx int) *doubleNode {
 	n := l.head.right
 	for i := 0; i < idx && n != l.tail; i++ {
 		n = n.right
@@ -149,12 +143,12 @@ func (l *LinkedList) getNodeByIndex(idx int) *listNode {
 	return n
 }
 
-func (l *LinkedList) addToTail(node *listNode) {
+func (l *LinkedList) addToTail(node *doubleNode) {
 	node.left, node.right = l.tail.left, l.tail
 	l.tail.left.right, l.tail.left = node, node
 }
 
-func (l *LinkedList) removeNode(node *listNode) {
+func (l *LinkedList) removeNode(node *doubleNode) {
 	node.right.left, node.left.right = node.left, node.right
 }
 
