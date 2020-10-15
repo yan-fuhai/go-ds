@@ -3,7 +3,7 @@
 This project contains implementations of below data structures:
  
 - Cache
-    - LRU
+    - Key-value Pair, Set
 - List
     - Linked List
 - Queue:
