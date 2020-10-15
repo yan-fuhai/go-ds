@@ -14,44 +14,20 @@
 
 package cache
 
-type doubleListNode struct {
-	key   interface{}
-	val   interface{}
-	left  *doubleListNode
-	right *doubleListNode
-}
-
-// LRUCache store key-value pairs with fixed capacity.
+// KV store key-value pairs with fixed capacity.
 // It would remove the least recently used (LRU) key-value pair as it exceeds the capacity.
-type LRUCache struct {
+type KV struct {
 	capacity int
 	head     *doubleListNode
 	tail     *doubleListNode
 	keyMap   map[interface{}]*doubleListNode
 }
 
-// Delete deletes a key-value pair in this LRU cache.
-func (c *LRUCache) Delete(k interface{}) {
-	if nPtr, ok := c.keyMap[k]; ok {
-		delete(c.keyMap, k)
-		c.removeNode(nPtr)
-	}
-}
-
-// Keys returns a slice which contains all unique keys in this LRU cache.
-func (c *LRUCache) Keys() []interface{} {
-	keys := make([]interface{}, 0, len(c.keyMap))
-	for k := range c.keyMap {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-// NewLRUCache returns a new LRUCache pointer
-func NewLRUCache(capacity int) *LRUCache {
+// NewLRUCache returns a new KV pointer
+func NewLRUCache(capacity int) *KV {
 	head, tail := &doubleListNode{}, &doubleListNode{}
 	head.right, tail.left = tail, head
-	return &LRUCache{
+	return &KV{
 		capacity: capacity,
 		head:     head,
 		tail:     tail,
@@ -59,11 +35,40 @@ func NewLRUCache(capacity int) *LRUCache {
 	}
 }
 
+// Resize set a new capacity for LRU cache.
+func (c *KV) Resize(capacity int) {
+	if c.capacity > capacity {
+		for ; c.capacity != capacity; c.capacity-- {
+			tail := removeTail(c.head, c.tail)
+			delete(c.keyMap, tail.key)
+		}
+	} else {
+		c.capacity = capacity
+	}
+}
+
+// Delete deletes a key-value pair in this LRU cache.
+func (c *KV) Delete(k interface{}) {
+	if nPtr, ok := c.keyMap[k]; ok {
+		delete(c.keyMap, k)
+		removeNode(nPtr)
+	}
+}
+
+// Keys returns a slice which contains all unique keys in this LRU cache.
+func (c *KV) Keys() []interface{} {
+	keys := make([]interface{}, 0, len(c.keyMap))
+	for k := range c.keyMap {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
 // Put puts a new key-value pair in this cache.
 // It will update the value if the key already exist in cache.
-func (c *LRUCache) Put(k interface{}, v interface{}) {
+func (c *KV) Put(k interface{}, v interface{}) {
 	if nPtr, has := c.keyMap[k]; has {
-		c.moveToHead(nPtr)
+		moveToHead(c.head, nPtr)
 		if v != nPtr.val {
 			nPtr.val = v
 		}
@@ -74,53 +79,37 @@ func (c *LRUCache) Put(k interface{}, v interface{}) {
 			left:  nil,
 			right: nil,
 		}
-		c.addToHead(newNode)
+		addToHead(c.head, newNode)
 		c.keyMap[k] = newNode
 		if len(c.keyMap) > c.capacity {
 			delete(c.keyMap, c.tail.left.key)
-			c.removeTail()
+			removeTail(c.head, c.tail)
 		}
 	}
 }
 
-// Get returns the value corresponding with the key k.
-func (c *LRUCache) Get(k interface{}) interface{} {
+// Get returns the value corresponding to the key k.
+func (c *KV) Get(k interface{}) interface{} {
 	if nPtr, has := c.keyMap[k]; has {
-		c.moveToHead(nPtr)
+		moveToHead(c.head, nPtr)
 		return nPtr.val
 	}
 	return nil
 }
 
 // Clear removes all key-value pairs in this cache.
-func (c *LRUCache) Clear() {
+func (c *KV) Clear() {
 	c.head.right = c.tail
 	c.tail.left = c.head
 	c.keyMap = make(map[interface{}]*doubleListNode)
 }
 
-// moveToHead moves a node to the head of double linked-list.
-func (c *LRUCache) moveToHead(node *doubleListNode) {
-	if node != nil {
-		c.removeNode(node)
-		c.addToHead(node)
-	}
+// Size returns the size of cache.
+func (c *KV) Size() int {
+	return len(c.keyMap)
 }
 
-// removeNode removes a node from double linked-list.
-func (c *LRUCache) removeNode(node *doubleListNode) {
-	node.right.left, node.left.right = node.left, node.right
-}
-
-// addToHead adds a node to the head of double linked-list.
-func (c *LRUCache) addToHead(node *doubleListNode) {
-	node.left, node.right = c.head, c.head.right
-	c.head.right.left, c.head.right = node, node
-}
-
-// removeTail remove the tail node of double linked-list.
-func (c *LRUCache) removeTail() {
-	if c.head.right != c.tail {
-		c.removeNode(c.tail.left)
-	}
+// Cap returns the capacity of cache.
+func (c *KV) Cap() int {
+	return c.capacity
 }

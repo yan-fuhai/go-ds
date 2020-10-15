@@ -15,9 +15,44 @@
 package cache
 
 type Interface interface {
-	Put(k interface{}, v interface{})
-	Keys() []interface{}
-	Get(k interface{}) interface{}
-	Delete(k interface{})
+	Size() int
+	Cap() int
+	Resize(int)
 	Clear()
+}
+
+type doubleListNode struct {
+	key   interface{}
+	val   interface{}
+	left  *doubleListNode
+	right *doubleListNode
+}
+
+// moveToHead moves a node to the head of double linked-list.
+func moveToHead(head, node *doubleListNode) {
+	if node != nil {
+		removeNode(node)
+		addToHead(head, node)
+	}
+}
+
+// removeNode removes a node from double linked-list.
+func removeNode(node *doubleListNode) {
+	node.right.left, node.left.right = node.left, node.right
+}
+
+// addToHead adds a node to the head of double linked-list.
+func addToHead(head, node *doubleListNode) {
+	node.left, node.right = head, head.right
+	head.right.left, head.right = node, node
+}
+
+// removeTail removes the tail node of double linked-list.
+func removeTail(head, tail *doubleListNode) *doubleListNode {
+	if head.right != tail {
+		ret := tail.left
+		removeNode(tail.left)
+		return ret
+	}
+	return nil
 }
