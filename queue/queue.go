@@ -17,12 +17,14 @@ package queue
 import "fmt"
 
 type Interface interface {
+	Back() interface{}
+	Clear()
 	Empty() bool
-	Size() int
+	Front() interface{}
+	GetAll() []interface{}
 	PushBack(interface{})
 	PopFront() (interface{}, error)
-	GetAll() []interface{}
-	Clear()
+	Size() int
 }
 
 type queueNode struct {
@@ -96,4 +98,20 @@ func (q *Queue) GetAll() []interface{} {
 		p = p.next
 	}
 	return all
+}
+
+// Back returns the last item of queue.
+func (q *Queue) Back() interface{} {
+	if q.size != 0 {
+		return q.tail.val
+	}
+	return nil
+}
+
+// Front returns the first item of queue.
+func (q *Queue) Front() interface{} {
+	if q.size != 0 {
+		return q.head.next.val
+	}
+	return nil
 }

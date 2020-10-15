@@ -34,6 +34,26 @@ type Deque struct {
 	tail *dequeNode
 }
 
+// Back returns the last item of queue.
+func (q *Deque) Back() interface{} {
+	if q.size != 0 {
+		return q.tail.left.val
+	}
+	return nil
+}
+
+// Front returns the first item of queue.
+func (q *Deque) Front() interface{} {
+	if q.size != 0 {
+		return q.head.right.val
+	}
+	return nil
+}
+
+func (q *Deque) GetAll() []interface{} {
+	panic("implement me")
+}
+
 // NewDeque returns a new Deque pointer
 func NewDeque() *Deque {
 	head, tail := &dequeNode{}, &dequeNode{}
@@ -103,7 +123,7 @@ func (q *Deque) PopBack() (interface{}, error) {
 
 // Clear removes all elements in this deque.
 func (q *Deque) Clear() {
-	q.head.left = q.tail
+	q.head.right = q.tail
 	q.tail.left = q.head
 	q.size = 0
 }
