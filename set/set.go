@@ -14,7 +14,9 @@
 
 package set
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Interface interface {
 	Add(interface{})
