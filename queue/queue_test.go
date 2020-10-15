@@ -15,6 +15,7 @@
 package queue
 
 import (
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
@@ -123,5 +124,17 @@ func TestContinuousPushAndPop(t *testing.T) {
 				return
 			}
 		}
+	}
+}
+
+func TestGetAll(t *testing.T) {
+	n := 10000000
+	q := NewQueue()
+	for i := 0; i < n; i++ {
+		q.PushBack(i)
+	}
+	all := q.GetAll()
+	for i := 0; i < len(all); i++ {
+		assert.Equal(t, i, all[i])
 	}
 }

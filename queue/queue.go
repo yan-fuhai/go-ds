@@ -21,6 +21,7 @@ type Interface interface {
 	Size() int
 	PushBack(interface{})
 	PopFront() (interface{}, error)
+	GetAll() []interface{}
 	Clear()
 }
 
@@ -84,4 +85,15 @@ func (q *Queue) Clear() {
 	q.tail.next = nil
 	q.head = q.tail
 	q.size = 0
+}
+
+// GetAll returns a slice that contains all items in this queue with FIFO order.
+func (q *Queue) GetAll() []interface{} {
+	all := make([]interface{}, 0, q.size)
+	p := q.head.next
+	for p != q.tail {
+		all = append(all, p.val)
+		p = p.next
+	}
+	return all
 }
