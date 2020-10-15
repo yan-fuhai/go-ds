@@ -18,5 +18,6 @@ type Interface interface {
 	Put(k interface{}, v interface{})
 	Keys() []interface{}
 	Get(k interface{}) interface{}
+	Delete(k interface{})
 	Clear()
 }

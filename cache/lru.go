@@ -30,6 +30,14 @@ type LRUCache struct {
 	keyMap   map[interface{}]*doubleListNode
 }
 
+// Delete deletes a key-value pair in this LRU cache.
+func (c *LRUCache) Delete(k interface{}) {
+	if nPtr, ok := c.keyMap[k]; ok {
+		delete(c.keyMap, k)
+		c.removeNode(nPtr)
+	}
+}
+
 // Keys returns a slice which contains all unique keys in this LRU cache.
 func (c *LRUCache) Keys() []interface{} {
 	keys := make([]interface{}, 0, len(c.keyMap))
