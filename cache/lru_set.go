@@ -95,6 +95,7 @@ func (s *Set) Add(k interface{}) interface{} {
 func (s *Set) Delete(k interface{}) {
 	if nPtr, has := s.keyMap[k]; has {
 		removeNode(nPtr)
+		delete(s.keyMap, k)
 	}
 }
 
