@@ -60,7 +60,10 @@ func (s *Set) Clear() {
 
 // Has returns true if k already exist in this cache, else false.
 func (s *Set) Has(k interface{}) bool {
-	_, has := s.keyMap[k]
+	nPtr, has := s.keyMap[k]
+	if has {
+		moveToHead(s.head, nPtr)
+	}
 	return has
 }
 
