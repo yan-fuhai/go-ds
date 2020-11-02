@@ -14,7 +14,7 @@
 
 package cache
 
-// KV store key-value pairs with fixed capacity.
+// KV stores key-value pairs with fixed capacity.
 // It would remove the least recently used (LRU) key-value pair as it exceeds the capacity.
 type KV struct {
 	capacity int
