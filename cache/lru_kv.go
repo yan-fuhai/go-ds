@@ -14,6 +14,8 @@
 
 package cache
 
+import "sync"
+
 // KV stores key-value pairs with fixed capacity.
 // It would remove the least recently used (LRU) key-value pair as it exceeds the capacity.
 type KV struct {
@@ -21,6 +23,7 @@ type KV struct {
 	head     *doubleListNode
 	tail     *doubleListNode
 	keyMap   map[interface{}]*doubleListNode
+	mux      *sync.RWMutex
 }
 
 // NewLRUCache returns a new KV pointer
@@ -32,11 +35,15 @@ func NewLRUCache(capacity int) *KV {
 		head:     head,
 		tail:     tail,
 		keyMap:   make(map[interface{}]*doubleListNode),
+		mux:      &sync.RWMutex{},
 	}
 }
 
 // Resize set a new capacity for LRU cache.
 func (c *KV) Resize(capacity int) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
 	if c.capacity > capacity {
 		for ; c.capacity != capacity; c.capacity-- {
 			tail := removeTail(c.head, c.tail)
@@ -49,6 +56,9 @@ func (c *KV) Resize(capacity int) {
 
 // Delete deletes a key-value pair in this LRU cache.
 func (c *KV) Delete(k interface{}) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
 	if nPtr, ok := c.keyMap[k]; ok {
 		delete(c.keyMap, k)
 		removeNode(nPtr)
@@ -57,6 +67,9 @@ func (c *KV) Delete(k interface{}) {
 
 // Keys returns a slice which contains all unique keys in this LRU cache.
 func (c *KV) Keys() []interface{} {
+	c.mux.RLock()
+	defer c.mux.RUnlock()
+
 	keys := make([]interface{}, 0, len(c.keyMap))
 	for k := range c.keyMap {
 		keys = append(keys, k)
@@ -67,6 +80,9 @@ func (c *KV) Keys() []interface{} {
 // Put puts a new key-value pair in this cache.
 // It will update the value if the key already exist in cache.
 func (c *KV) Put(k interface{}, v interface{}) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
 	if nPtr, has := c.keyMap[k]; has {
 		moveToHead(c.head, nPtr)
 		if v != nPtr.val {
@@ -90,6 +106,9 @@ func (c *KV) Put(k interface{}, v interface{}) {
 
 // Get returns the value corresponding to the key k.
 func (c *KV) Get(k interface{}) interface{} {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
 	if nPtr, has := c.keyMap[k]; has {
 		moveToHead(c.head, nPtr)
 		return nPtr.val
@@ -99,6 +118,9 @@ func (c *KV) Get(k interface{}) interface{} {
 
 // Clear removes all key-value pairs in this cache.
 func (c *KV) Clear() {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
 	c.head.right = c.tail
 	c.tail.left = c.head
 	c.keyMap = make(map[interface{}]*doubleListNode)
@@ -106,10 +128,16 @@ func (c *KV) Clear() {
 
 // Size returns the size of cache.
 func (c *KV) Size() int {
+	c.mux.RLock()
+	defer c.mux.RUnlock()
+
 	return len(c.keyMap)
 }
 
 // Cap returns the capacity of cache.
 func (c *KV) Cap() int {
+	c.mux.RLock()
+	defer c.mux.RUnlock()
+
 	return c.capacity
 }
