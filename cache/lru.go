@@ -16,6 +16,14 @@ package cache
 
 import "sync"
 
+// doubleListNode is the inner data structure of LRU
+type doubleListNode struct {
+	key   interface{}
+	val   interface{}
+	left  *doubleListNode
+	right *doubleListNode
+}
+
 // lru stores key-value pairs with fixed capacity.
 // It would remove the least recently used (Cache) key-value pair as it exceeds the capacity.
 type lru struct {
@@ -140,4 +148,33 @@ func (l *lru) Cap() int {
 	defer l.mux.RUnlock()
 
 	return l.capacity
+}
+
+// moveToHead moves a node to the head of double linked-list.
+func moveToHead(head, node *doubleListNode) {
+	if node != nil {
+		removeNode(node)
+		addToHead(head, node)
+	}
+}
+
+// removeNode removes a node from double linked-list.
+func removeNode(node *doubleListNode) {
+	node.right.left, node.left.right = node.left, node.right
+}
+
+// addToHead adds a node to the head of double linked-list.
+func addToHead(head, node *doubleListNode) {
+	node.left, node.right = head, head.right
+	head.right.left, head.right = node, node
+}
+
+// removeTail removes the tail node of double linked-list.
+func removeTail(head, tail *doubleListNode) *doubleListNode {
+	if head.right != tail {
+		ret := tail.left
+		removeNode(tail.left)
+		return ret
+	}
+	return nil
 }
