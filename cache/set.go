@@ -14,18 +14,18 @@
 
 package cache
 
-type Set struct {
+type set struct {
 	capacity int
 	head     *doubleListNode
 	tail     *doubleListNode
 	keyMap   map[interface{}]*doubleListNode
 }
 
-// NewSet returns a new Set pointer.
-func NewSet(capacity int) *Set {
+// NewSet returns a new set pointer.
+func NewSet(capacity int) Set {
 	head, tail := &doubleListNode{}, &doubleListNode{}
 	head.right, tail.left = tail, head
-	return &Set{
+	return &set{
 		capacity: capacity,
 		head:     head,
 		tail:     tail,
@@ -34,17 +34,17 @@ func NewSet(capacity int) *Set {
 }
 
 // Size returns the size of this cache. The size would not exceed the capacity of this cache.
-func (s *Set) Size() int {
+func (s *set) Size() int {
 	return len(s.keyMap)
 }
 
 // Cap returns the capacity of this cache.
-func (s *Set) Cap() int {
+func (s *set) Cap() int {
 	return s.capacity
 }
 
 // Resize sets a new capacity for this cache.
-func (s *Set) Resize(capacity int) {
+func (s *set) Resize(capacity int) {
 	for len(s.keyMap) > capacity {
 		delete(s.keyMap, removeTail(s.head, s.tail).key)
 	}
@@ -52,14 +52,14 @@ func (s *Set) Resize(capacity int) {
 }
 
 // Clear clears this cache.
-func (s *Set) Clear() {
+func (s *set) Clear() {
 	s.head.right = s.tail
 	s.tail.left = s.head
 	s.keyMap = make(map[interface{}]*doubleListNode)
 }
 
 // Has returns true if k already exist in this cache, else false.
-func (s *Set) Has(k interface{}) bool {
+func (s *set) Has(k interface{}) bool {
 	nPtr, has := s.keyMap[k]
 	if has {
 		moveToHead(s.head, nPtr)
@@ -68,8 +68,8 @@ func (s *Set) Has(k interface{}) bool {
 }
 
 // Add adds a new item into this set.
-// If the size of this set exceed capacity after this operation, the LRU item would be removed and be returned.
-func (s *Set) Add(k interface{}) interface{} {
+// If the size of this set exceed capacity after this operation, the Cache item would be removed and be returned.
+func (s *set) Add(k interface{}) interface{} {
 	if nPtr, has := s.keyMap[k]; has {
 		moveToHead(s.head, nPtr)
 	} else {
@@ -92,7 +92,7 @@ func (s *Set) Add(k interface{}) interface{} {
 }
 
 // Delete deletes an item from this set and returns nothing, no matter whether or not it already exist in this set.
-func (s *Set) Delete(k interface{}) {
+func (s *set) Delete(k interface{}) {
 	if nPtr, has := s.keyMap[k]; has {
 		removeNode(nPtr)
 		delete(s.keyMap, k)
@@ -100,7 +100,7 @@ func (s *Set) Delete(k interface{}) {
 }
 
 // Keys return a slice which contains all unique items in this set.
-func (s *Set) Keys() []interface{} {
+func (s *set) Keys() []interface{} {
 	all := make([]interface{}, 0, len(s.keyMap))
 	p := s.head.right
 	for p != s.tail {
@@ -111,7 +111,7 @@ func (s *Set) Keys() []interface{} {
 }
 
 // MostRU returns the most recently used items in this set.
-func (s *Set) MostRU() interface{} {
+func (s *set) MostRU() interface{} {
 	if s.head.right != s.tail && s.tail.left != s.head {
 		return s.head.right.val
 	} else {
@@ -120,7 +120,7 @@ func (s *Set) MostRU() interface{} {
 }
 
 // LeastRU returns the least recently used items in this set.
-func (s *Set) LeastRU() interface{} {
+func (s *set) LeastRU() interface{} {
 	if s.head.right != s.tail && s.tail.left != s.head {
 		return s.tail.left.val
 	} else {

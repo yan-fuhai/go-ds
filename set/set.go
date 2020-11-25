@@ -18,48 +18,37 @@ import (
 	"fmt"
 )
 
-type Interface interface {
-	Add(interface{})
-	Has(interface{}) bool
-	Empty() bool
-	Remove(interface{}) error
-	Discard(interface{})
-	GetAll() []interface{}
-	Size() int
-	Clear()
-}
-
-// Set Implementation of SET which contains unique elements.
-type Set struct {
+// set Implementation of SET which contains unique elements.
+type set struct {
 	m map[interface{}]bool
 }
 
 // NewSet returns a new set pointer.
-func NewSet() *Set {
-	return &Set{
+func NewSet() Set {
+	return &set{
 		m: make(map[interface{}]bool),
 	}
 }
 
-// Add add element into Set.
-func (s *Set) Add(k interface{}) {
+// Add add element into set.
+func (s *set) Add(k interface{}) {
 	s.m[k] = true
 }
 
 // Has return true if k already in set, else false.
-func (s *Set) Has(k interface{}) bool {
+func (s *set) Has(k interface{}) bool {
 	_, has := s.m[k]
 	return has
 }
 
 // Empty returns true if set is empty, else false.
-func (s *Set) Empty() bool {
+func (s *set) Empty() bool {
 	return len(s.m) == 0
 }
 
-// Remove remove k from Set.
-// Return error if k doesn't exist in Set.
-func (s *Set) Remove(k interface{}) error {
+// Remove remove k from set.
+// Return error if k doesn't exist in set.
+func (s *set) Remove(k interface{}) error {
 	if _, has := s.m[k]; has {
 		delete(s.m, k)
 		return nil
@@ -68,13 +57,13 @@ func (s *Set) Remove(k interface{}) error {
 	}
 }
 
-// Discard remove k from Set and return nothing no matter k already in Set.
-func (s *Set) Discard(k interface{}) {
+// Discard remove k from set and return nothing no matter k already in set.
+func (s *set) Discard(k interface{}) {
 	_ = s.Remove(k)
 }
 
-// GetAll return slice that contains all elements in this Set.
-func (s *Set) GetAll() []interface{} {
+// GetAll return slice that contains all elements in this set.
+func (s *set) GetAll() []interface{} {
 	all := make([]interface{}, 0, len(s.m))
 	for k := range s.m {
 		all = append(all, k)
@@ -82,12 +71,12 @@ func (s *Set) GetAll() []interface{} {
 	return all
 }
 
-// Clear remove all elements in the Set.
-func (s *Set) Clear() {
+// Clear remove all elements in the set.
+func (s *set) Clear() {
 	s.m = make(map[interface{}]bool)
 }
 
-// Size return the number of elements in this Set.
-func (s *Set) Size() int {
+// Size return the number of elements in this set.
+func (s *set) Size() int {
 	return len(s.m)
 }

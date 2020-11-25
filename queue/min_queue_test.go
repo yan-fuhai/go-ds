@@ -27,12 +27,12 @@ func (i mqItem) Val() interface{} {
 	return i.val
 }
 
-func (i mqItem) Equal(item MinQueueItemInterface) bool {
+func (i mqItem) Equal(item MinQueueItem) bool {
 	cmpVal := item.(mqItem).val
 	return i.val == cmpVal
 }
 
-func (i mqItem) Less(item MinQueueItemInterface) bool {
+func (i mqItem) Less(item MinQueueItem) bool {
 	cmpVal := item.(mqItem).val
 	return i.val < cmpVal
 }

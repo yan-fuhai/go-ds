@@ -16,47 +16,38 @@ package stack
 
 import "fmt"
 
-type Interface interface {
-	Clear()
-	Empty() bool
-	Push(interface{})
-	Pop() (interface{}, error)
-	Size() int
-	Top() interface{}
-}
-
 type stackNode struct {
 	val  interface{}
 	next *stackNode
 }
 
-type Stack struct {
+type stack struct {
 	size int
 	top  *stackNode
 }
 
-// NewStack returns a new Stack pointer
-func NewStack() *Stack {
-	return &Stack{
+// NewStack returns a new stack pointer
+func NewStack() Stack {
+	return &stack{
 		size: 0,
 		top:  &stackNode{},
 	}
 }
 
 // Clear removes all elements in stack.
-func (s *Stack) Clear() {
+func (s *stack) Clear() {
 	// GC would automatically free memory.
 	s.top.next = nil
 	s.size = 0
 }
 
 // Empty return true if stack is empty, else false
-func (s *Stack) Empty() bool {
+func (s *stack) Empty() bool {
 	return s.size == 0
 }
 
 // Push pushed an element into stack and add it to the top of stack.
-func (s *Stack) Push(v interface{}) {
+func (s *stack) Push(v interface{}) {
 	s.top.next = &stackNode{
 		val:  v,
 		next: s.top.next,
@@ -65,7 +56,7 @@ func (s *Stack) Push(v interface{}) {
 }
 
 // Pop pops the top element of stack.
-func (s *Stack) Pop() (interface{}, error) {
+func (s *stack) Pop() (interface{}, error) {
 	if s.Empty() {
 		return nil, fmt.Errorf("can not pop elements from empty stack")
 	}
@@ -76,7 +67,7 @@ func (s *Stack) Pop() (interface{}, error) {
 }
 
 // Top returns the top element of stack.
-func (s *Stack) Top() interface{} {
+func (s *stack) Top() interface{} {
 	if !s.Empty() {
 		return s.top.next.val
 	}
@@ -84,6 +75,6 @@ func (s *Stack) Top() interface{} {
 }
 
 // Size returns the size of stack.
-func (s *Stack) Size() int {
+func (s *stack) Size() int {
 	return s.size
 }

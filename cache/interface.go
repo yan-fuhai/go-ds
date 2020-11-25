@@ -14,11 +14,29 @@
 
 package cache
 
-type Interface interface {
+type Cache interface {
 	Size() int
 	Cap() int
 	Resize(int)
 	Clear()
+}
+
+type LRU interface {
+	Cache
+	Delete(k interface{})
+	Keys() []interface{}
+	Put(k interface{}, v interface{})
+	Get(k interface{}) interface{}
+}
+
+type Set interface {
+	Cache
+	Has(k interface{}) bool
+	Add(k interface{}) interface{}
+	Delete(k interface{})
+	Keys() []interface{}
+	MostRU() interface{}
+	LeastRU() interface{}
 }
 
 type doubleListNode struct {

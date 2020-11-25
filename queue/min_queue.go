@@ -14,32 +14,26 @@
 
 package queue
 
-type MinQueueItemInterface interface {
-	Val() interface{}
-	Less(MinQueueItemInterface) bool
-	Equal(item MinQueueItemInterface) bool
+type minQueue struct {
+	*queue
+	monoQueue Deque
 }
 
-type MinQueue struct {
-	Queue
-	monoQueue *Deque
-}
-
-func NewMinQueue() *MinQueue {
-	return &MinQueue{
-		Queue:     *NewQueue(),
+func NewMinQueue() MinQueue {
+	return &minQueue{
+		queue:     NewQueue().(*queue),
 		monoQueue: NewDeque(),
 	}
 }
 
-func (q *MinQueue) PushBack(v interface{}) {
-	var back MinQueueItemInterface
+func (q *minQueue) PushBack(v interface{}) {
+	var back MinQueueItem
 
-	item := v.(MinQueueItemInterface)
-	q.Queue.PushBack(item.Val())
+	item := v.(MinQueueItem)
+	q.queue.PushBack(item.Val())
 
 	for !q.monoQueue.Empty() {
-		back = q.monoQueue.Back().(MinQueueItemInterface)
+		back = q.monoQueue.Back().(MinQueueItem)
 		if item.Less(back) {
 			_, _ = q.monoQueue.PopBack()
 		} else {
@@ -50,11 +44,11 @@ func (q *MinQueue) PushBack(v interface{}) {
 	q.monoQueue.PushBack(item)
 }
 
-func (q *MinQueue) PopFront() (interface{}, error) {
-	ret, err := q.Queue.PopFront()
+func (q *minQueue) PopFront() (interface{}, error) {
+	ret, err := q.queue.PopFront()
 	if err == nil {
 		if !q.monoQueue.Empty() {
-			if front := q.monoQueue.Front().(MinQueueItemInterface); front.Val() == ret {
+			if front := q.monoQueue.Front().(MinQueueItem); front.Val() == ret {
 				_, _ = q.monoQueue.PopFront()
 			}
 		}
@@ -62,15 +56,15 @@ func (q *MinQueue) PopFront() (interface{}, error) {
 	return ret, err
 }
 
-func (q *MinQueue) Clear() {
-	q.Queue.Clear()
+func (q *minQueue) Clear() {
+	q.queue.Clear()
 	q.monoQueue.Clear()
 }
 
-func (q *MinQueue) Min() interface{} {
+func (q *minQueue) Min() interface{} {
 	min := q.monoQueue.Front()
 	if min != nil {
-		return min.(MinQueueItemInterface).Val()
+		return min.(MinQueueItem).Val()
 	}
 	return nil
 }

@@ -12,29 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package list
+package stack
 
-type Interface interface {
-	Append(interface{})
-	Back() interface{}
+type Stack interface {
 	Clear()
 	Empty() bool
-	Front() interface{}
-	Get(int) (interface{}, error)
-	Length() int
-	Remove(int) error
-	Index(interface{}) int
-	Insert(int, interface{}) error
-	ToSlice() []interface{}
-}
-
-type singleNode struct {
-	val  interface{}
-	next *singleNode
-}
-
-type doubleNode struct {
-	val   interface{}
-	left  *doubleNode
-	right *doubleNode
+	Push(interface{})
+	Pop() (interface{}, error)
+	Size() int
+	Top() interface{}
 }

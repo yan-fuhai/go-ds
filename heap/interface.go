@@ -14,19 +14,25 @@
 
 package heap
 
-import (
-	"sort"
-)
+import "sort"
 
-type Interface interface {
+type Heap interface {
 	sort.Interface
 	Push(interface{}, int)
 	Pop() (interface{}, int, error)
 }
 
+type PriorityQueue interface {
+	Len() int
+	Less(i int, j int) bool
+	Swap(i int, j int)
+	Push(v interface{}, priority int)
+	Pop() (interface{}, int, error)
+}
+
 // up shifts up h[j] until it's less than its parent (according to Less()).
 // The code below was copied from heap, the official golang package
-func up(h Interface, j int) {
+func up(h Heap, j int) {
 	for {
 		i := (j - 1) / 2 // parent
 		if i == j || !h.Less(j, i) {
@@ -41,7 +47,7 @@ func up(h Interface, j int) {
 
 // down shifts down h[j] until it's NOT less than left child and right child (according to Less()).
 // The code below was copied from heap, the official golang package.
-func down(h Interface, i0, n int) bool {
+func down(h Heap, i0, n int) bool {
 	i := i0
 	for {
 		j1 := 2*i + 1

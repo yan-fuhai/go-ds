@@ -19,12 +19,12 @@ import (
 	"testing"
 )
 
-type kv struct {
+type keyValue struct {
 	key   string
 	value interface{}
 }
 
-var puts = []kv{
+var puts = []keyValue{
 	{
 		key:   "a",
 		value: 1,
@@ -65,12 +65,12 @@ var puts = []kv{
 
 func TestLRUCache(t *testing.T) {
 	capacity := 2
-	c := NewLRUCache(capacity)
+	c := NewLRU(capacity)
 	for _, p := range puts {
 		c.Put(p.key, p.value)
 	}
 
-	gets := []kv{
+	gets := []keyValue{
 		{
 			key:   "a",
 			value: nil,
@@ -94,7 +94,7 @@ func TestLRUCache(t *testing.T) {
 }
 
 func TestClear(t *testing.T) {
-	c := NewLRUCache(5)
+	c := NewLRU(5)
 	for _, p := range puts {
 		c.Put(p.key, p.value)
 	}
@@ -108,7 +108,7 @@ func TestClear(t *testing.T) {
 }
 
 func TestKeys(t *testing.T) {
-	c := NewLRUCache(10)
+	c := NewLRU(10)
 	for i := 0; i < 5; i++ {
 		c.Put(i, 0)
 	}

@@ -12,19 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cache
+package queue
 
-import (
-	"fmt"
-	"github.com/stretchr/testify/assert"
-	"testing"
-)
+type Queue interface {
+	Back() interface{}
+	Clear()
+	Empty() bool
+	Front() interface{}
+	GetAll() []interface{}
+	PushBack(interface{})
+	PopFront() (interface{}, error)
+	Size() int
+}
 
-func TestLRUSet(t *testing.T) {
-	s := NewSet(5)
-	for i := 0; i < 200; i++ {
-		s.Add(i)
-	}
-	assert.Equal(t, 5, s.Size())
-	fmt.Println(s.Keys())
+type Deque interface {
+	Queue
+	PushFront(v interface{})
+	PopBack() (interface{}, error)
+}
+
+type MinQueueItem interface {
+	Val() interface{}
+	Less(MinQueueItem) bool
+	Equal(item MinQueueItem) bool
+}
+
+type MinQueue interface {
+	Queue
+	Min() interface{}
 }

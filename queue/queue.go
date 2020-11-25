@@ -16,51 +16,40 @@ package queue
 
 import "fmt"
 
-type Interface interface {
-	Back() interface{}
-	Clear()
-	Empty() bool
-	Front() interface{}
-	GetAll() []interface{}
-	PushBack(interface{})
-	PopFront() (interface{}, error)
-	Size() int
-}
-
 type queueNode struct {
 	val  interface{}
 	next *queueNode
 }
 
-type Queue struct {
-	size int // the number of elements in this Queue
+type queue struct {
+	size int // the number of elements in this queue
 	head *queueNode
 	tail *queueNode
 }
 
-// NewQueue returns a new Queue pointer.
-func NewQueue() *Queue {
+// NewQueue returns a new queue pointer.
+func NewQueue() Queue {
 	head := &queueNode{}
 	tail := head
-	return &Queue{
+	return &queue{
 		size: 0,
 		head: head,
 		tail: tail,
 	}
 }
 
-// Empty returns true if Queue is empty, else false.
-func (q *Queue) Empty() bool {
+// Empty returns true if queue is empty, else false.
+func (q *queue) Empty() bool {
 	return q.size == 0
 }
 
-// Size returns the number of elements in this Queue.
-func (q *Queue) Size() int {
+// Size returns the number of elements in this queue.
+func (q *queue) Size() int {
 	return q.size
 }
 
-// PushBack pushes a new element at the back of this Queue.
-func (q *Queue) PushBack(v interface{}) {
+// PushBack pushes a new element at the back of this queue.
+func (q *queue) PushBack(v interface{}) {
 	q.tail.next = &queueNode{
 		val:  v,
 		next: nil,
@@ -69,11 +58,11 @@ func (q *Queue) PushBack(v interface{}) {
 	q.size++
 }
 
-// PopFront pops the front element of this Queue.
-// Error != nil only if this Queue is empty.
-func (q *Queue) PopFront() (interface{}, error) {
+// PopFront pops the front element of this queue.
+// Error != nil only if this queue is empty.
+func (q *queue) PopFront() (interface{}, error) {
 	if q.Empty() {
-		return nil, fmt.Errorf("can not pop elements from empty Queue")
+		return nil, fmt.Errorf("can not pop elements from empty queue")
 	}
 	ret := q.head.next.val
 	q.head.next = q.head.next.next
@@ -82,7 +71,7 @@ func (q *Queue) PopFront() (interface{}, error) {
 }
 
 // Clear removes all elements in this queue.
-func (q *Queue) Clear() {
+func (q *queue) Clear() {
 	q.tail.val = nil
 	q.tail.next = nil
 	q.head = q.tail
@@ -90,7 +79,7 @@ func (q *Queue) Clear() {
 }
 
 // GetAll returns a slice that contains all items in this queue with FIFO order.
-func (q *Queue) GetAll() []interface{} {
+func (q *queue) GetAll() []interface{} {
 	all := make([]interface{}, 0, q.size)
 	p := q.head.next
 	for p != q.tail {
@@ -101,7 +90,7 @@ func (q *Queue) GetAll() []interface{} {
 }
 
 // Back returns the last item of queue.
-func (q *Queue) Back() interface{} {
+func (q *queue) Back() interface{} {
 	if q.size != 0 {
 		return q.tail.val
 	}
@@ -109,7 +98,7 @@ func (q *Queue) Back() interface{} {
 }
 
 // Front returns the first item of queue.
-func (q *Queue) Front() interface{} {
+func (q *queue) Front() interface{} {
 	if q.size != 0 {
 		return q.head.next.val
 	}

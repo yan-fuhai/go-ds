@@ -62,7 +62,7 @@ func TestDeque(t *testing.T) {
 	q.PushFront(2)
 	q.PushFront(3)
 	if q.Size() != 2 {
-		t.Error("size of Queue must be 2")
+		t.Error("size of queue must be 2")
 	}
 	if front, err := q.PopFront(); err != nil {
 		if front != 3 {
@@ -70,7 +70,7 @@ func TestDeque(t *testing.T) {
 		}
 	}
 	if q.Size() != 1 {
-		t.Error("size of Queue must be 1")
+		t.Error("size of queue must be 1")
 	}
 	if back, err := q.PopBack(); err == nil {
 		if back != 2 {
@@ -84,7 +84,7 @@ func TestDeque(t *testing.T) {
 	q.PushFront(2)
 	q.PushFront(3)
 	if q.Size() != 2 {
-		t.Error("size of Queue must be 2")
+		t.Error("size of queue must be 2")
 	}
 	if back, err := q.PopBack(); err != nil {
 		if back != 2 {
@@ -92,7 +92,7 @@ func TestDeque(t *testing.T) {
 		}
 	}
 	if q.Size() != 1 {
-		t.Error("size of Queue must be 1")
+		t.Error("size of queue must be 1")
 	}
 	if front, err := q.PopFront(); err == nil {
 		if front != 3 {

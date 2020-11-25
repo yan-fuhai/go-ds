@@ -16,26 +16,31 @@ package queue
 
 import "fmt"
 
-type DoubleEndedQueue interface {
-	Interface
-	PushFront(interface{})
-	PopBack() (interface{}, error)
-}
-
 type dequeNode struct {
 	val   interface{}
 	left  *dequeNode
 	right *dequeNode
 }
 
-type Deque struct {
+type deque struct {
 	size int
 	head *dequeNode
 	tail *dequeNode
 }
 
+// NewDeque returns a new deque pointer
+func NewDeque() Deque {
+	head, tail := &dequeNode{}, &dequeNode{}
+	head.right, tail.left = tail, head
+	return &deque{
+		size: 0,
+		head: head,
+		tail: tail,
+	}
+}
+
 // Back returns the last item of queue.
-func (q *Deque) Back() interface{} {
+func (q *deque) Back() interface{} {
 	if q.size != 0 {
 		return q.tail.left.val
 	}
@@ -43,40 +48,29 @@ func (q *Deque) Back() interface{} {
 }
 
 // Front returns the first item of queue.
-func (q *Deque) Front() interface{} {
+func (q *deque) Front() interface{} {
 	if q.size != 0 {
 		return q.head.right.val
 	}
 	return nil
 }
 
-func (q *Deque) GetAll() []interface{} {
+func (q *deque) GetAll() []interface{} {
 	panic("implement me")
 }
 
-// NewDeque returns a new Deque pointer
-func NewDeque() *Deque {
-	head, tail := &dequeNode{}, &dequeNode{}
-	head.right, tail.left = tail, head
-	return &Deque{
-		size: 0,
-		head: head,
-		tail: tail,
-	}
-}
-
 // Empty returns true if deque is empty, else false.
-func (q *Deque) Empty() bool {
+func (q *deque) Empty() bool {
 	return q.size == 0
 }
 
 // Size returns the number of elements in this deque.
-func (q *Deque) Size() int {
+func (q *deque) Size() int {
 	return q.size
 }
 
 // PushBack pushes a new element at the back of this deque.
-func (q *Deque) PushBack(v interface{}) {
+func (q *deque) PushBack(v interface{}) {
 	newNode := &dequeNode{
 		val:   v,
 		left:  q.tail.left,
@@ -87,7 +81,7 @@ func (q *Deque) PushBack(v interface{}) {
 }
 
 // PushBack pushes a new element at the front of this deque.
-func (q *Deque) PushFront(v interface{}) {
+func (q *deque) PushFront(v interface{}) {
 	newNode := &dequeNode{
 		val:   v,
 		left:  q.head,
@@ -99,9 +93,9 @@ func (q *Deque) PushFront(v interface{}) {
 
 // PopFront pops the front element of this deque.
 // Error != nil only if this deque is empty.
-func (q *Deque) PopFront() (interface{}, error) {
+func (q *deque) PopFront() (interface{}, error) {
 	if q.Empty() {
-		return nil, fmt.Errorf("can not pop element from empty Queue")
+		return nil, fmt.Errorf("can not pop element from empty queue")
 	}
 	ret := q.head.right.val
 	q.head.right.right.left, q.head.right = q.head, q.head.right.right
@@ -111,9 +105,9 @@ func (q *Deque) PopFront() (interface{}, error) {
 
 // PopBack pops the back element of this deque.
 // Error != nil only if this deque is empty.
-func (q *Deque) PopBack() (interface{}, error) {
+func (q *deque) PopBack() (interface{}, error) {
 	if q.Empty() {
-		return nil, fmt.Errorf("can not pop element from empty Queue")
+		return nil, fmt.Errorf("can not pop element from empty queue")
 	}
 	ret := q.tail.left.val
 	q.tail.left.left.right, q.tail.left = q.tail, q.tail.left.left
@@ -122,7 +116,7 @@ func (q *Deque) PopBack() (interface{}, error) {
 }
 
 // Clear removes all elements in this deque.
-func (q *Deque) Clear() {
+func (q *deque) Clear() {
 	q.head.right = q.tail
 	q.tail.left = q.head
 	q.size = 0
