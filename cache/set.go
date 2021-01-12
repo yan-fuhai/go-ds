@@ -113,7 +113,7 @@ func (s *set) Keys() []interface{} {
 // MostRU returns the most recently used items in this set.
 func (s *set) MostRU() interface{} {
 	if s.head.right != s.tail && s.tail.left != s.head {
-		return s.head.right.val
+		return s.head.right.key
 	} else {
 		return nil
 	}
@@ -122,7 +122,7 @@ func (s *set) MostRU() interface{} {
 // LeastRU returns the least recently used items in this set.
 func (s *set) LeastRU() interface{} {
 	if s.head.right != s.tail && s.tail.left != s.head {
-		return s.tail.left.val
+		return s.tail.left.key
 	} else {
 		return nil
 	}
